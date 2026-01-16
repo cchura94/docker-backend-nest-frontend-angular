@@ -1,0 +1,37 @@
+<div class="card">
+    <h1>Sucursal</h1>
+    
+    <form [formGroup]="sucursalForm">
+        <label for="nombre" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Nombre</label>
+        <input pInputText id="nombre" type="text" placeholder="Nombre" class="w-full md:w-120 mb-8" formControlName="nombre" />
+
+        <label for="direccion" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Ingrese Dirección</label>
+        <input pInputText id="direccion" type="text" placeholder="Direccion" class="w-full md:w-120 mb-8" formControlName="direccion" />
+        
+        <label for="ciudad" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Ingrese Ciudad</label>
+        <input pInputText id="ciudad" type="text" placeholder="Ciudad" class="w-full md:w-120 mb-8" formControlName="ciudad" />
+        <p-button label="Guardar" styleClass="w-full"  [disabled]="!sucursalForm.valid" (click)="funGuardar()"></p-button>
+
+    </form>
+
+
+    <p-table [value]="sucursales()" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header>
+            <tr>
+                <th>ID</th>
+                <th>NOMBRE</th>
+                <th>Direccion</th>
+                <th>Ciudad</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-sucursal>
+            <tr>
+                <td>{{ sucursal.id }}</td>
+                <td>{{ sucursal.nombre }}</td>
+                <td>{{ sucursal.direccion }}</td>
+                <td>{{ sucursal.ciudad }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+</div>

@@ -1,0 +1,74 @@
+###
+GET http://127.0.0.1:3000/nota?tipo_nota=venta
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hcmlhQG1haWwuY29tIiwiaWQiOiIzYjY3ODYwZS0wYzUxLTQ5MWMtYmY0OS00MWM0OWRkNjFhZjYiLCJpYXQiOjE3NjgyNjc5NjksImV4cCI6MTc2ODI3MTU2OX0.Usg786KL-wAvPfK_0cdD4AnwMC9UgPSvfmlSpexpOmE
+
+###
+POST http://127.0.0.1:3000/nota 
+Content-Type: application/json
+
+{
+  "fecha": "2025-11-30",
+  "tipo_nota": "compra",
+  "cliente_id": 1,
+  "user_id": "30f01a2a-52ff-49a0-938f-3a0a214095b5",
+  "impuestos": "0",
+  "descuento": "0",
+  "estado_nota": "NINUNO",
+  "observaciones": "NINGUNO",
+  "movimientos": [
+   {
+    "producto_id": 4,
+    "almacen_id": 1,
+    "cantidad": 8,
+    "tipo_movimiento": "ingreso",
+    "precio_unitario_compra": "220.00",
+    "precio_unitario_venta": "260.00",
+    "observaciones": "NINGUNO"
+   },
+   {
+    "producto_id": 5,
+    "almacen_id": 1,
+    "cantidad": 8,
+    "tipo_movimiento": "ingreso",
+    "precio_unitario_compra": "220.00",
+    "precio_unitario_venta": "260.00",
+    "observaciones": "NINGUNO"
+   }
+  ]
+}
+
+### Venta
+
+POST http://127.0.0.1:3000/nota 
+Content-Type: application/json
+
+{
+  "fecha": "2025-11-31",
+  "tipo_nota": "venta",
+  "cliente_id": 2,
+  "user_id": "30f01a2a-52ff-49a0-938f-3a0a214095b5",
+  "impuestos": "0",
+  "descuento": "0",
+  "estado_nota": "NINUNO",
+  "observaciones": "NINGUNO",
+  "movimientos": [
+   {
+    "producto_id": 4,
+    "almacen_id": 1,
+    "cantidad": 1,
+    "tipo_movimiento": "salida",
+    "precio_unitario_compra": "220.00",
+    "precio_unitario_venta": "260.00",
+    "observaciones": "NINGUNO"
+   },
+   {
+    "producto_id": 5,
+    "almacen_id": 1,
+    "cantidad": 2,
+    "tipo_movimiento": "salida",
+    "precio_unitario_compra": "220.00",
+    "precio_unitario_venta": "260.00",
+    "observaciones": "NINGUNO"
+   }
+  ]
+}

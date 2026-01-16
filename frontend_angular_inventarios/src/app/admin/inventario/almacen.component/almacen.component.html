@@ -1,0 +1,48 @@
+<div class="card">
+
+    <form [formGroup]="almacenForm">
+        <label for="nombre" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Nombre</label>
+        <input pInputText id="nombre" type="text" placeholder="Nombre" class="w-full md:w-120 mb-8" formControlName="nombre" />
+
+        <label for="codigo" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Ingrese Codigo</label>
+        <input pInputText id="codigo" type="text" placeholder="Codigo" class="w-full md:w-120 mb-8" formControlName="codigo" />
+        
+        <label for="descripcion" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Ingrese Descripción</label>
+        <input pInputText id="descripcion" type="text" placeholder="Descripción" class="w-full md:w-120 mb-8" formControlName="descripcion" />
+        
+        <label for="sucursal" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Sucursal</label>
+        <p-select [options]="sucursales()" formControlName="sucursal" optionLabel="nombre" optionValue="id" placeholder="Seleccionar Sucursal" class="w-full md:w-56" />
+
+        
+        <p-button label="Guardar" styleClass="w-full"  [disabled]="!almacenForm.valid" (click)="funGuardar()"></p-button>
+
+    </form>
+
+    <div class="card flex justify-center">
+        <p-select [options]="sucursales()" [(ngModel)]="selectedSucursal" optionLabel="nombre" optionValue="id" placeholder="Seleccionar Sucursal" class="w-full md:w-56" (onChange)="funSelectedSucursal()" />
+    </div>
+
+    <p-table [value]="almacenes()" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template #header>
+            <tr>
+                <th>ID</th>
+                <th>NOMBRE</th>
+                <th>Codigo</th>
+                <th>Descripción</th>
+                <th>Sucursal</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-alm>
+            <tr>
+                <td>{{ alm.id }}</td>
+                <td>{{ alm.nombre }}</td>
+                <td>{{ alm.codigo }}</td>
+                <td>{{ alm.descripcion }}</td>
+                <td>
+                    {{ alm.sucursal.nombre }}
+                    <small>{{alm.sucursal.direccion}}</small>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

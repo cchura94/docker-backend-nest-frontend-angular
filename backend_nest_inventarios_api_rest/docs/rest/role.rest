@@ -1,0 +1,11 @@
+POST http://127.0.0.1:3000/roles
+Content-Type: application/json
+
+{
+    "nombre": "JEFE DE ALMACEN",
+    "descripcion": "Gerente de sistema"
+}
+
+### lista de roles
+
+GET http://127.0.0.1:3000/roles

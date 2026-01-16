@@ -1,0 +1,239 @@
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="bg-white rounded-lg shadow p-4">
+                <p-table #dt [value]="products()" [rows]="10" [lazy]="true" [totalRecords]="totalRecords()"
+                    [loading]="loading()" (onLazyLoad)="cargarDatos($event)" [columns]="cols" [paginator]="true"
+                    [tableStyle]="{ 'min-width': '10rem' }" [rowHover]="true" dataKey="id"
+                    currentPageReportTemplate="Mostrando {first} al {last} de {totalRecords} productos"
+                    [showCurrentPageReport]="true">
+                    <ng-template #caption>
+                        <div class="flex items-center justify-between">
+                            <h5 class="m-0">Gestión Productos</h5>
+                            <p-iconfield>
+                                <p-inputicon class="pi pi-search" />
+                                <input pInputText type="text" placeholder="Buscar..." [(ngModel)]="search"
+                                    (change)="funGetProductos()" />
+                            </p-iconfield>
+                        </div>
+                    </ng-template>
+                    <ng-template #header>
+                        <tr>
+                            <th pSortableColumn="nombre" style="min-width:4rem">
+                                <div class="flex items-center gap-2">
+                                    Nombre
+                                    <p-sortIcon field="nombre" />
+                                </div>
+                            </th>
+                            <th>Imagen</th>
+                            <th pSortableColumn="precio" style="min-width: 2rem">
+                                <div class="flex items-center gap-2">
+                                    Precio
+                                    <p-sortIcon field="precio" />
+                                </div>
+                            </th>
+                            <th pSortableColumn="category" style="min-width:2rem">
+                                <div class="flex items-center gap-2">
+                                    M
+                                    <p-sortIcon field="marca" />
+                                </div>
+                            </th>
+                            <th pSortableColumn="Stock" style="min-width:1rem">
+                                <div class="flex items-center gap-2">
+                                    Stock
+                                    <p-sortIcon field="stock" />
+                                </div>
+                            </th>
+
+                            <th style="min-width: 2rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-product>
+                        <tr>
+                            <td style="min-width: 2rem">{{ product.nombre }}</td>
+                            <td>
+                                @if (product.imagen) {
+                                <p-image [src]="'http://127.0.0.1:3000/' + product.imagen" alt="Image" width="30"
+                                    [preview]="true" />
+                                }
+                            </td>
+                            <td>{{ product.precio_venta_actual | currency: 'USD' }}</td>
+                            <td>{{ product.marca }}</td>
+                            <td style="min-width: 2rem">
+                                @for(alm of product.almacenes; track $index){
+                                    <small><a [href]="alm?.almacen?.id">{{ alm?.almacen?.nombre }}</a></small>
+                                    <br>
+                                    <small>CANT: <strong>{{ alm?.cantidad_actual }}</strong></small>
+                                    <hr>
+                                }
+                            </td>
+                            <td>
+
+                                <p-button icon="pi pi-plus" class="mr-2" [rounded]="true" [outlined]="false"
+                                    (click)="addCarrito(product)" />
+
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-xl font-semibold mb-4">Carrito</h2>
+                    <p-table [value]="carrito()">
+                        <ng-template #header>
+                            <tr>
+                                <th>Producto</th>
+                                <th>C.</th>
+                                <th>Precio</th>
+                                <th>Acción</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #body let-prod>
+                            <tr>
+                                <td>{{ prod.nombre }}</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="prod.cantidad">
+                                    
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" [(ngModel)]="prod.precio">
+                                </td>
+                                <td>
+                                    <p-button icon="pi pi-trash" class="mr-2" [rounded]="false" [outlined]="false"
+                                        (click)="quitarCarrito(prod.id_producto)" />
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="bg-white rounded-lg shadow p-2">
+                    <h2 class="text-xl font-semibold">Sucursal/Almacen</h2>
+
+                    <div class="card flex justify-center">
+                        <p-select [options]="sucursales()" [(ngModel)]="selectedSucursal" optionLabel="nombre" optionValue="id" placeholder="Seleccionar Sucursal" class="w-full md:w-56" (onChange)="funSelectedSucursal()" />
+                    </div>
+                
+                    @if(!almacen().id){
+                        <p-table [value]="almacenes()">
+                            <ng-template #header>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NOMBRE</th>
+                                    <th>Codigo</th>
+                                    <th>Sucursal</th>
+                                    <th>ACCION</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template #body let-alm>
+                                <tr>
+                                    <td>{{ alm.id }}</td>
+                                    <td>{{ alm.nombre }}</td>
+                                    <td>{{ alm.codigo }}</td>
+                                    <td>
+                                        {{ alm.sucursal.nombre }}
+                                        <small>{{alm.sucursal.direccion}}</small>
+                                    </td>
+                                    <td>
+                                        <p-button icon="pi pi-plus" class="mr-2" [rounded]="false" [outlined]="false"
+                                            (click)="seleccionarAlmacen(alm)" />
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    }
+                    @if(almacen()){
+
+                        <h6>ALMACEN: {{almacen().nombre}}</h6>
+                        <h6>CODIGO: {{almacen().codigo}}</h6>
+                    }
+                    
+                        
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-xl font-semibold mb-4">Cliente/Proveedor</h2>
+                    <p-button (click)="showDialogCliente()" label="Nuevo Proveedor" />
+                    
+                    <input pInputText type="text" placeholder="Buscar Proveedor..." [(ngModel)]="buscar_cliente"
+                                    (change)="funGetCLienteProveedor()" />
+
+                                    
+                                    @if(!clienteProveedor().id){
+                                        <p-table [value]="lista_cliente_proveedor()">
+                                            <ng-template #header>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>RAZON SOCIAL</th>
+                                                    <th>TIPO</th>
+                                                    <th>ACCION</th>
+                                                </tr>
+                                            </ng-template>
+                                            <ng-template #body let-clie>
+                                                <tr>
+                                                    <td>{{ clie.identificacion }}</td>
+                                                    <td>{{ clie.razon_social }}</td>
+                                                    <td>{{ clie.tipo }}</td>
+
+                                                    <td>
+                                                        <p-button icon="pi pi-plus" class="mr-2" [rounded]="false" [outlined]="false"
+                                                            (click)="seleccionarClienteProveedor(clie)" />
+                                                    </td>
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    }
+                                    <br>
+
+                                    @if(clienteProveedor().id){
+
+                                        <h6>RAZON SOCIAL: {{clienteProveedor().razon_social}}</h6>
+                                        <h6>TELEFONO: {{clienteProveedor().telefono}}</h6>
+                                        <h6>DIRECCION: {{clienteProveedor().direccion}}</h6>
+                                        <h6>CORREO: {{clienteProveedor().correo}}</h6>
+                                    }
+
+                    
+                    <p-dialog header="Proveedor" [modal]="true" [(visible)]="visibleCliente" [style]="{ width: '25rem' }" [formGroup]="proveedorForm">
+                        <span class="p-text-secondary block mb-8">Datos Proveedor.</span>
+
+                        <div class="flex items-center gap-4 mb-4">
+                            <label for="rs" class="font-semibold w-24">Razon Social</label>
+                            <input pInputText id="rs" class="flex-auto" autocomplete="off" formControlName="razon_social" />
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <label for="identificacion" class="font-semibold w-24">identificacion</label>
+                            <input pInputText id="identificacion" class="flex-auto" autocomplete="off" formControlName="identificacion" />
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <label for="telefono" class="font-semibold w-24">telefono</label>
+                            <input pInputText id="telefono" class="flex-auto" autocomplete="off" formControlName="telefono" />
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <label for="direccion" class="font-semibold w-24">direccion</label>
+                            <input pInputText id="direccion" class="flex-auto" autocomplete="off" formControlName="direccion" />
+                        </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <label for="correo" class="font-semibold w-24">correo</label>
+                            <input pInputText id="correo" class="flex-auto" autocomplete="off" formControlName="correo" />
+                        </div>
+                        
+                        <div class="flex justify-end gap-2">
+                            <p-button label="Cancel" severity="secondary" (click)="visibleCliente.set(false)" />
+                            <p-button label="Guardar Proveedor" (click)="funGuardarProveedor()" />
+                        </div>
+                    </p-dialog>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-xl font-semibold mb-4">Registro Compra</h2>
+                    <p-button (click)="funRegCompraProductos()" label="Registrar Compra de Productos" />
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
