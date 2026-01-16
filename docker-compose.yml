@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  postgres_inv:
+    container_name: postgres_inv
+    image: postgres:15-alpine
+    restart: always
+    ports:
+      - "5498:5432"
+    environment:
+      POSTGRES_DB: bd_nest_backend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin54321
+    volumes:
+      - postgres_data_pg:/var/lib/postgresql/data
+    networks:
+      - app-backfront-network
+  
+  backend_nest:
+    container_name: backend_nest
+    build:
+      context: ./backend_nest_inventarios_api_rest
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app-backfront-network
+    depends_on:
+      - postgres_inv
+  
+  frontend_angular:
+    container_name: frontend_angular
+    build:
+      context: ./frontend_angular_inventarios
+      dockerfile: Dockerfile
+    ports:
+      - "86:80"
+    networks:
+      - app-backfront-network
+    depends_on:
+      - backend_nest
+  
+  nginx_bf:
+    container_name: nginx_bf
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "87:80"
+    networks:
+      - app-backfront-network
+    depends_on:
+      - backend_nest
+      - frontend_angular
+  
+networks:
+  app-backfront-network:
+    driver: bridge
+
+volumes:
+  postgres_data_pg:

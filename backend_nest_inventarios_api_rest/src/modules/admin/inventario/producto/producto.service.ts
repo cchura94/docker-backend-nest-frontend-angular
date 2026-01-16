@@ -23,6 +23,7 @@ export class ProductoService {
     const categoria = await this.categoriaRepository.findOne({where: {id: createProductoDto.categoria}})
     if(!categoria)throw new NotFoundException('Categoria no encontrada');
 
+    createProductoDto.fecha_registro = new Date().toISOString().split('T')[0];
     const producto = this.productoRepository.create({...createProductoDto, categoria});
     return this.productoRepository.save(producto);
   }

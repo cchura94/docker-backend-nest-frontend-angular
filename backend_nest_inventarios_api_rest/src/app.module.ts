@@ -24,15 +24,15 @@ import { join } from 'path';
     }), 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DATABASE_HOST || 'localhost',
-      port: +`${process.env.PORT}` || 5433,
+      host: process.env.DATABASE_HOST || 'postgres_inv',
+      port: +`${process.env.PORT}` || 5432,
       username: process.env.DATABASE_USER || 'postgres',
-      password: process.env.DATABASE_PASSWORD || 'postgresql',
+      password: process.env.DATABASE_PASSWORD || 'admin54321',
       database: process.env.DATABASE_NAME || 'bd_nest_backend',
       entities: [
         __dirname + '/../**/*.entity{.ts,.js}'
       ],
-      synchronize: false
+      synchronize: true
     }),
     UsersModule,
     RolesModule,
